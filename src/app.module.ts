@@ -5,8 +5,6 @@ import { DatabaseModule } from './core/database/database.module';
 import { ConfigModule } from '@nestjs/config';
 import { UsersModule } from './modules/users/users.module';
 import { AuthModule } from './modules/auth/auth.module';
-import { AuthService } from './modules/auth/auth.service';
-import { JwtService, JwtModule } from '@nestjs/jwt';
 
 
 @Module({

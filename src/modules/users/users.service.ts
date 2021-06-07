@@ -12,6 +12,26 @@ export class UsersService {
         return await this.userRepository.create<User>(user);
     }
 
+    async findAll() {
+        return await this.userRepository.findAll();
+    }
+
+    async findOne(id:number): Promise<User> {
+        return await this.userRepository.findOne<User>({ where: { id } });
+    }
+
+    async update(id: number, updatedUser:UserDto ){
+        const user = await this.findOne(id);
+        return await user.update(updatedUser);
+        // return await this.userRepository.update(user, updatedUser);
+    }
+
+    async remove(id: number){
+        const user = await this.findOneById(id);
+        return await user.destroy();
+        // return await this.userRepository.destroy(user);
+    }
+
     async findOneByEmail(email: string): Promise<User> {
         return await this.userRepository.findOne<User>({ where: { email } });
     }
