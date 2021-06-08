@@ -6,10 +6,10 @@ import { mapFinderOptions } from 'sequelize/types/lib/utils';
 import { FindOptions, Op } from 'sequelize';
 
 interface searchObject {
-    name: string,
-    email: string,
-    phone: string,
-    gender: string
+  name: string;
+  email: string;
+  phone: string;
+  gender: string;
 }
 @Injectable()
 export class UsersService {
@@ -26,13 +26,15 @@ export class UsersService {
     if (limit) {
       findOptions.limit = limit;
     }
-    findOptions.offset = limit ? limit*page: 0;
+    findOptions.offset = limit ? limit * page : 0;
     findOptions.where = {};
-    await Promise.all(Object.keys(searchObject).map((searchKey)=>{
+    await Promise.all(
+      Object.keys(searchObject).map((searchKey) => {
         findOptions.where[searchKey] = {
-           [Op.like]: `%${searchObject[searchKey]}%`
+          [Op.like]: `%${searchObject[searchKey]}%`,
         };
-    }));
+      }),
+    );
     return await this.userRepository.findAll(findOptions);
   }
 

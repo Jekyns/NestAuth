@@ -29,9 +29,13 @@ export class UsersController {
   ) {
     const page = pageParam ? +pageParam : null;
     const limit = limitParam ? +limitParam : null;
-    const searchObjectParams = {email, phone, name, gender};
+    const searchObjectParams = { email, phone, name, gender };
     const searchObject = JSON.parse(JSON.stringify(searchObjectParams));
-    return this.usersService.findAll(page ?? null, +limit ?? null, searchObject);
+    return this.usersService.findAll(
+      page ?? null,
+      +limit ?? null,
+      searchObject,
+    );
   }
 
   @Get(':id')

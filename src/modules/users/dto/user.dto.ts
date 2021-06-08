@@ -4,7 +4,7 @@ export class UserDto {
   name: string;
   @IsEmail()
   email: string;
-  @IsMobilePhone("ru-RU")
+  @IsMobilePhone('ru-RU')
   @IsOptional()
   phone: string;
   password: string;
