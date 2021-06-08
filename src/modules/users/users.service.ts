@@ -2,45 +2,53 @@ import { Injectable, Inject } from '@nestjs/common';
 import { User } from './user.entity';
 import { UserDto } from './dto/user.dto';
 import { USER_REPOSITORY } from '../../core/constants';
+import { mapFinderOptions } from 'sequelize/types/lib/utils';
+import { FindOptions } from 'sequelize';
 
 @Injectable()
 export class UsersService {
+  constructor(
+    @Inject(USER_REPOSITORY) private readonly userRepository: typeof User,
+  ) {}
 
-    constructor(@Inject(USER_REPOSITORY) private readonly userRepository: typeof User) { }
+  async create(user: User): Promise<User> {
+    return await this.userRepository.create<User>(user);
+  }
 
-    async create(user: User): Promise<User> {
-        return await this.userRepository.create<User>(user);
+  async findAll(page: number = 0, limit: number) {
+    const findOptions: FindOptions = {};
+    if (limit) {
+      findOptions.limit = limit;
     }
+    findOptions.offset = limit ? limit*page: 0;
+    return await this.userRepository.findAll(findOptions);
+  }
 
-    async findAll() {
-        return await this.userRepository.findAll();
-    }
+  async findOne(id: number): Promise<User> {
+    return await this.userRepository.findOne<User>({ where: { id } });
+  }
 
-    async findOne(id:number): Promise<User> {
-        return await this.userRepository.findOne<User>({ where: { id } });
-    }
+  async update(id: number, updatedUser: UserDto) {
+    const user = await this.findOne(id);
+    return await user.update(updatedUser);
+    // return await this.userRepository.update(user, updatedUser);
+  }
 
-    async update(id: number, updatedUser:UserDto ){
-        const user = await this.findOne(id);
-        return await user.update(updatedUser);
-        // return await this.userRepository.update(user, updatedUser);
-    }
+  async remove(id: number) {
+    const user = await this.findOneById(id);
+    return await user.destroy();
+    // return await this.userRepository.destroy(user);
+  }
 
-    async remove(id: number){
-        const user = await this.findOneById(id);
-        return await user.destroy();
-        // return await this.userRepository.destroy(user);
-    }
+  async findOneByEmail(email: string): Promise<User> {
+    return await this.userRepository.findOne<User>({ where: { email } });
+  }
 
-    async findOneByEmail(email: string): Promise<User> {
-        return await this.userRepository.findOne<User>({ where: { email } });
-    }
+  async findOneByPhone(phone: string): Promise<User> {
+    return await this.userRepository.findOne<User>({ where: { phone } });
+  }
 
-    async findOneByPhone(phone: string): Promise<User> {
-        return await this.userRepository.findOne<User>({ where: { phone } });
-    }
-
-    async findOneById(id: number): Promise<User> {
-        return await this.userRepository.findOne<User>({ where: { id } });
-    }
+  async findOneById(id: number): Promise<User> {
+    return await this.userRepository.findOne<User>({ where: { id } });
+  }
 }
