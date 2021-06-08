@@ -1,8 +1,12 @@
+import { IsEmail, IsMobilePhone, IsOptional } from 'class-validator';
 export class UserDto {
-  readonly id: number;
-  readonly name: string;
-  readonly email: string;
-  readonly phone: string;
-  readonly password: string;
-  readonly gender: string;
+  id: number;
+  name: string;
+  @IsEmail()
+  email: string;
+  @IsMobilePhone("ru-RU")
+  @IsOptional()
+  phone: string;
+  password: string;
+  gender: string;
 }
