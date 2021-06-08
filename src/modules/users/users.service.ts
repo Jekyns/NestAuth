@@ -3,8 +3,14 @@ import { User } from './user.entity';
 import { UserDto } from './dto/user.dto';
 import { USER_REPOSITORY } from '../../core/constants';
 import { mapFinderOptions } from 'sequelize/types/lib/utils';
-import { FindOptions } from 'sequelize';
+import { FindOptions, Op } from 'sequelize';
 
+interface searchObject {
+    name: string,
+    email: string,
+    phone: string,
+    gender: string
+}
 @Injectable()
 export class UsersService {
   constructor(
@@ -15,12 +21,18 @@ export class UsersService {
     return await this.userRepository.create<User>(user);
   }
 
-  async findAll(page: number = 0, limit: number) {
+  async findAll(page: number = 0, limit: number, searchObject: searchObject) {
     const findOptions: FindOptions = {};
     if (limit) {
       findOptions.limit = limit;
     }
     findOptions.offset = limit ? limit*page: 0;
+    findOptions.where = {};
+    await Promise.all(Object.keys(searchObject).map((searchKey)=>{
+        findOptions.where[searchKey] = {
+           [Op.like]: `%${searchObject[searchKey]}%`
+        };
+    }));
     return await this.userRepository.findAll(findOptions);
   }
 
